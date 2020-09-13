@@ -1,0 +1,66 @@
+#include <iostream>
+using namespace std;
+struct dll{
+    int data;
+    dll *prev;
+    dll *next;
+    
+    dll(int val) :data(val), prev(NULL),next(NULL) {}
+};
+struct Stack{
+    int count;
+    dll *head;
+    dll *mid;
+};
+Stack* createStack(){
+    Stack* new_stack = new Stack();
+    new_stack->count=0;
+    return new_stack;
+}
+void push(Stack *st,int data){
+    dll *new_node = new dll(data);
+    new_node->next = st->head;
+    
+    st->count++;
+    if(st->count==1){
+        st->mid = new_node;
+    }
+    else{
+        st->head->prev = new_node;
+        if(!(st->count & 1)){
+            st->mid = st->mid->prev;
+        }
+    }
+    st->head = new_node;   
+}
+int pop(Stack *st){
+    if(st->count==0) return -1;
+    dll *temp=st->head;
+    int val = temp->data;
+    st->head = temp->next;
+    
+    if(st->head !=NULL) st->head->prev = NULL;
+    st->count--;
+    if(st->count & 1){
+        st->mid = st->mid->next;
+    }
+    free(temp);
+    return val;
+}
+int findMiddle(Stack* st){
+    if(!st->head) return NULL;
+    return st->mid->data;
+}
+int main() {
+	Stack *st = createStack();
+	push(st,11);
+	push(st,21);
+	push(st,31);
+	push(st,41);
+	push(st,51);
+	push(st,61);
+	cout << "Item popped is " << pop(st) << endl;  
+    cout << "Item popped is " << pop(st) << endl;  
+    cout << "Middle Element is " << findMiddle(st) << endl;
+	return 0;
+}
